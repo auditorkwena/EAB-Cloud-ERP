@@ -709,8 +709,118 @@
     }
 
     /* ==============================================================
-       FILTER BAR
+       SEARCHABLE DROPDOWN
        ============================================================== */
+    .srch-drop {
+      position: relative;
+      width: 100%;
+    }
+    .srch-drop__input {
+      width: 100%;
+      padding: var(--sp-2) var(--sp-3);
+      border: 1px solid var(--clr-border);
+      border-radius: var(--radius-sm);
+      font-size: var(--fs-sm);
+      outline: none;
+      font-family: inherit;
+      background: var(--clr-surface);
+      cursor: pointer;
+      box-sizing: border-box;
+    }
+    .srch-drop__input:focus { border-color: var(--clr-primary); box-shadow: 0 0 0 3px var(--clr-primary-ghost); }
+    .srch-drop__panel {
+      display: none;
+      position: absolute;
+      top: calc(100% + 4px);
+      left: 0; right: 0;
+      background: var(--clr-surface);
+      border: 1px solid var(--clr-primary);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-lg);
+      z-index: 9999;
+      overflow: hidden;
+    }
+    .srch-drop__panel.open { display: block; }
+    .srch-drop__search {
+      width: 100%;
+      padding: var(--sp-2) var(--sp-3);
+      border: none;
+      border-bottom: 1px solid var(--clr-border);
+      font-size: var(--fs-sm);
+      outline: none;
+      font-family: inherit;
+      background: var(--clr-surface-alt);
+      box-sizing: border-box;
+    }
+    .srch-drop__list {
+      max-height: 220px;
+      overflow-y: auto;
+      scrollbar-width: thin;
+    }
+    .srch-drop__item {
+      padding: var(--sp-2) var(--sp-3);
+      font-size: var(--fs-sm);
+      cursor: pointer;
+      transition: background var(--transition-fast);
+      display: flex;
+      align-items: center;
+      gap: var(--sp-2);
+    }
+    .srch-drop__item:hover { background: var(--clr-primary-ghost); color: var(--clr-primary); }
+    .srch-drop__item.selected { background: var(--clr-primary-light); color: var(--clr-primary); font-weight: 600; }
+    .srch-drop__item--empty { padding: var(--sp-4); text-align: center; color: var(--clr-text-muted); font-size: var(--fs-xs); }
+
+    /* ==============================================================
+       CURRENCY TABS (per-currency balance display)
+       ============================================================== */
+    .cur-tab-bar {
+      display: flex;
+      gap: var(--sp-2);
+      flex-wrap: wrap;
+      margin-bottom: var(--sp-4);
+    }
+    .cur-tab {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 14px;
+      border-radius: 20px;
+      font-size: var(--fs-xs);
+      font-weight: 600;
+      cursor: pointer;
+      border: 1px solid var(--clr-border);
+      color: var(--clr-text-secondary);
+      background: var(--clr-surface);
+      transition: all var(--transition-fast);
+    }
+    .cur-tab:hover { border-color: var(--clr-primary); color: var(--clr-primary); }
+    .cur-tab.active { background: var(--clr-primary); color: #fff; border-color: var(--clr-primary); }
+    .cur-tab__flag { font-size: .9rem; }
+    .cur-tab__badge {
+      background: rgba(255,255,255,.25);
+      border-radius: 10px;
+      padding: 0 5px;
+      font-size: .6rem;
+    }
+    .cur-tab.active .cur-tab__badge { background: rgba(255,255,255,.3); }
+
+    /* Balance colour helpers */
+    .bal-pos { color: #10b981; font-weight: 700; }
+    .bal-neg { color: #ef4444; font-weight: 700; }
+
+    /* ==============================================================
+       LIVE CONNECT PROMPT
+       ============================================================== */
+    .connect-prompt {
+      background: linear-gradient(135deg, #eff6ff, #e0f2fe);
+      border: 1px solid #bfdbfe;
+      border-radius: var(--radius-lg);
+      padding: var(--sp-5);
+      margin-bottom: var(--sp-4);
+    }
+    .connect-prompt__title { font-size: var(--fs-sm); font-weight: 700; color: #1e40af; margin-bottom: var(--sp-2); }
+    .connect-prompt__text { font-size: var(--fs-xs); color: #3b82f6; margin-bottom: var(--sp-3); line-height: 1.6; }
+
     .filter-bar {
       display: flex;
       align-items: center;
@@ -804,11 +914,11 @@
         <svg class="nav-item__arrow" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg>
       </div>
       <div class="nav-sub" id="bankingSub">
+        <div class="nav-item" data-module="banking-dashboard" onclick="navigateTo('banking-dashboard', this)">
+          <span class="nav-item__label">Dashboard</span>
+        </div>
         <div class="nav-item" data-module="banking-add-banks" onclick="navigateTo('banking-add-banks', this)">
           <span class="nav-item__label">Add Banks</span>
-        </div>
-        <div class="nav-item" data-module="banking-dashboard" onclick="navigateTo('banking-dashboard', this)">
-          <span class="nav-item__label">Banking Dashboard</span>
         </div>
         <div class="nav-item" data-module="banking-payments" onclick="navigateTo('banking-payments', this)">
           <span class="nav-item__label">Payments</span>
@@ -1395,9 +1505,9 @@
           <div class="stat-card__footer">Sum of all opening balances</div>
         </div>
         <div class="stat-card">
-          <div class="stat-card__header"><span class="stat-card__label">Total Current Balance</span><div class="stat-card__icon stat-card__icon--amber"><svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18 20V10M12 20V4M6 20v-6"/></svg></div></div>
+          <div class="stat-card__header"><span class="stat-card__label">Total Closing Balance</span><div class="stat-card__icon stat-card__icon--amber"><svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18 20V10M12 20V4M6 20v-6"/></svg></div></div>
           <div class="stat-card__value" id="bankKpiCurrentTotal">0.00</div>
-          <div class="stat-card__footer">Sum of all current balances</div>
+          <div class="stat-card__footer">Sum of all closing balances</div>
         </div>
         <div class="stat-card">
           <div class="stat-card__header"><span class="stat-card__label">Active Accounts</span><div class="stat-card__icon stat-card__icon--green"><svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><path d="M22 4L12 14.01l-3-3"/></svg></div></div>
@@ -1415,7 +1525,14 @@
         <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:var(--sp-4);">
           <div>
             <label style="display:block; font-size:var(--fs-xs); font-weight:600; color:var(--clr-text-secondary); margin-bottom:var(--sp-1); text-transform:uppercase; letter-spacing:.05em;">Bank Name *</label>
-            <input id="bankFieldBankName" type="text" placeholder="e.g. Kenya Commercial Bank" style="width:100%; padding:var(--sp-2) var(--sp-3); border:1px solid var(--clr-border); border-radius:var(--radius-sm); font-size:var(--fs-sm); outline:none; font-family:inherit;" onfocus="this.style.borderColor='var(--clr-primary)'" onblur="this.style.borderColor='var(--clr-border)'" />
+            <div class="srch-drop" id="bankNameDrop">
+              <input class="srch-drop__input" id="bankFieldBankNameDisplay" type="text" placeholder="Search or select a Kenya bank…" readonly onclick="bankDB.toggleBankDrop()" />
+              <input type="hidden" id="bankFieldBankName" />
+              <div class="srch-drop__panel" id="bankNamePanel">
+                <input class="srch-drop__search" id="bankNameSearch" type="text" placeholder="Type to filter banks…" oninput="bankDB.filterBankDrop()" autocomplete="off" />
+                <div class="srch-drop__list" id="bankNameList"></div>
+              </div>
+            </div>
           </div>
           <div>
             <label style="display:block; font-size:var(--fs-xs); font-weight:600; color:var(--clr-text-secondary); margin-bottom:var(--sp-1); text-transform:uppercase; letter-spacing:.05em;">Account Name *</label>
@@ -1436,9 +1553,14 @@
           </div>
           <div>
             <label style="display:block; font-size:var(--fs-xs); font-weight:600; color:var(--clr-text-secondary); margin-bottom:var(--sp-1); text-transform:uppercase; letter-spacing:.05em;">Currency</label>
-            <select id="bankFieldCurrency" onchange="bankDB.updateCurrencyLabel()" style="width:100%; padding:var(--sp-2) var(--sp-3); border:1px solid var(--clr-border); border-radius:var(--radius-sm); font-size:var(--fs-sm); outline:none; font-family:inherit; background:var(--clr-surface);">
-              <option value="">Loading currencies...</option>
-            </select>
+            <div class="srch-drop" id="bankCurrDrop">
+              <input class="srch-drop__input" id="bankFieldCurrencyDisplay" type="text" placeholder="Search currency…" readonly onclick="bankDB.toggleCurrDrop()" />
+              <input type="hidden" id="bankFieldCurrency" value="KES" onchange="bankDB.updateCurrencyLabel()" />
+              <div class="srch-drop__panel" id="bankCurrPanel">
+                <input class="srch-drop__search" id="bankCurrSearch" type="text" placeholder="Type currency code or name…" oninput="bankDB.filterCurrDrop()" autocomplete="off" />
+                <div class="srch-drop__list" id="bankCurrList"></div>
+              </div>
+            </div>
           </div>
           <div>
             <label style="display:block; font-size:var(--fs-xs); font-weight:600; color:var(--clr-text-secondary); margin-bottom:var(--sp-1); text-transform:uppercase; letter-spacing:.05em;">Branch</label>
@@ -1470,6 +1592,17 @@
           </div>
         </div>
         <input type="hidden" id="bankEditId" value="" />
+        <!-- Live Connect Prompt -->
+        <div id="bankConnectPrompt" class="connect-prompt" style="display:none;margin-top:var(--sp-4);">
+          <div class="connect-prompt__title">🔗 Connect Bank for Live Feeds?</div>
+          <div class="connect-prompt__text" id="bankConnectMsg">Would you like to connect <strong id="bankConnectBankName"></strong> to automatically receive live transaction feeds? The system will attempt to fetch your account details via the bank's Open Banking API.</div>
+          <div style="display:flex;gap:var(--sp-3);flex-wrap:wrap;">
+            <button class="toolbar__btn toolbar__btn--primary" onclick="bankDB.attemptAutoConnect()" id="bankAutoConnectBtn">🔌 Yes, Connect Automatically</button>
+            <button class="toolbar__btn toolbar__btn--ghost" onclick="bankDB.manualSetup()">✏️ No, I'll Enter Details Manually</button>
+            <button class="toolbar__btn toolbar__btn--ghost" onclick="bankDB.dismissConnect()">Skip</button>
+          </div>
+          <div id="bankConnectResult" style="margin-top:var(--sp-3);"></div>
+        </div>
         <div style="display:flex; gap:var(--sp-3); margin-top:var(--sp-5);">
           <button class="toolbar__btn toolbar__btn--primary" onclick="bankDB.save()">
             <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
@@ -1616,10 +1749,10 @@
               <th class="sortable">Account Name</th>
               <th>Account Number</th>
               <th>Type</th>
-              <th>Currency</th>
+              <th>Ccy</th>
               <th>Branch</th>
               <th class="sortable">Opening Balance</th>
-              <th class="sortable">Current Balance</th>
+              <th class="sortable">Closing Balance</th>
               <th>Status</th>
               <th>Actions</th>
             </tr>
@@ -1634,46 +1767,118 @@
     <!-- ============================================================
          MODULE: Banking > Dashboard
          ============================================================ -->
-    <section class="module" id="module-banking-dashboard" data-module-name="Banking Dashboard">
+    <section class="module" id="module-banking-dashboard" data-module-name="Dashboard">
       <div class="module__header">
         <div class="module__header-left">
-          <h1 class="module__title">Banking Dashboard</h1>
-          <p class="module__subtitle">Real-time overview of all bank accounts, balances, and transactions</p>
+          <h1 class="module__title">Dashboard</h1>
+          <p class="module__subtitle">Real-time overview of all bank accounts, balances, payments, receipts, and reconciliation</p>
         </div>
         <div class="toolbar">
-          <button class="toolbar__btn toolbar__btn--ghost" onclick="bankDB.render()"><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg> Refresh</button>
+          <button class="toolbar__btn toolbar__btn--ghost" onclick="bankDB.renderDashboard()">
+            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg> Refresh
+          </button>
           <button class="toolbar__btn toolbar__btn--ghost" onclick="bankDB.exportCSV()">Export</button>
         </div>
       </div>
-      <div class="dashboard-grid">
+
+      <!-- ── TOP KPI ROW ── -->
+      <div class="dashboard-grid" style="grid-template-columns:repeat(auto-fill,minmax(200px,1fr));">
         <div class="stat-card">
           <div class="stat-card__header"><span class="stat-card__label">Total Accounts</span><div class="stat-card__icon stat-card__icon--blue"><svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M2 10h20"/></svg></div></div>
           <div class="stat-card__value" id="bdKpiCount">0</div><div class="stat-card__footer">Registered accounts</div>
         </div>
         <div class="stat-card">
-          <div class="stat-card__header"><span class="stat-card__label">Total Opening Balance</span><div class="stat-card__icon stat-card__icon--amber"><svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg></div></div>
-          <div class="stat-card__value" id="bdKpiOpening">0.00</div><div class="stat-card__footer">Sum of opening balances</div>
+          <div class="stat-card__header"><span class="stat-card__label">Total Payments</span><div class="stat-card__icon stat-card__icon--red"><svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 19V5m0 0l-7 7m7-7l7 7"/></svg></div></div>
+          <div class="stat-card__value" id="bdKpiPayments">0.00</div><div class="stat-card__footer">All outflows (KES equiv.)</div>
         </div>
         <div class="stat-card">
-          <div class="stat-card__header"><span class="stat-card__label">Total Current Balance</span><div class="stat-card__icon stat-card__icon--green"><svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18 20V10M12 20V4M6 20v-6"/></svg></div></div>
-          <div class="stat-card__value" id="bdKpiCurrent">0.00</div><div class="stat-card__footer">After all transactions</div>
+          <div class="stat-card__header"><span class="stat-card__label">Total Receipts</span><div class="stat-card__icon stat-card__icon--green"><svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 5v14m0 0l-7-7m7 7l7-7"/></svg></div></div>
+          <div class="stat-card__value" id="bdKpiReceipts">0.00</div><div class="stat-card__footer">All inflows (KES equiv.)</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card__header"><span class="stat-card__label">Pending Reconciliation</span><div class="stat-card__icon stat-card__icon--amber"><svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg></div></div>
+          <div class="stat-card__value" id="bdKpiPendingRecon">0</div><div class="stat-card__footer">Unreconciled accounts</div>
         </div>
         <div class="stat-card">
           <div class="stat-card__header"><span class="stat-card__label">Active Accounts</span><div class="stat-card__icon stat-card__icon--green"><svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><path d="M22 4L12 14.01l-3-3"/></svg></div></div>
           <div class="stat-card__value" id="bdKpiActive">0</div><div class="stat-card__footer">Currently active</div>
         </div>
       </div>
-      <div class="dashboard-charts">
-        <div class="chart-card"><div class="chart-card__title">Balance by Account</div><div class="chart-placeholder" id="bdChart1">Add accounts to see chart</div></div>
-        <div class="chart-card"><div class="chart-card__title">Currency Distribution</div><div class="chart-placeholder" id="bdChart2">Add accounts to see chart</div></div>
+
+      <!-- ── LOCAL vs FOREIGN BALANCE SUMMARY ── -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--sp-4);margin-bottom:var(--sp-5);">
+        <!-- Local KES -->
+        <div style="background:var(--clr-surface);border:1px solid var(--clr-border);border-radius:var(--radius-lg);padding:var(--sp-5);border-top:3px solid #10b981;">
+          <div style="display:flex;align-items:center;gap:var(--sp-2);margin-bottom:var(--sp-4);">
+            <span style="font-size:1.4rem;">🇰🇪</span>
+            <div><div style="font-size:var(--fs-sm);font-weight:700;color:var(--clr-text);">Local Currency (KES)</div><div style="font-size:var(--fs-xs);color:var(--clr-text-secondary);">Kenyan Shilling accounts only</div></div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--sp-3);">
+            <div style="background:var(--clr-surface-alt);border-radius:var(--radius-sm);padding:var(--sp-3);">
+              <div style="font-size:var(--fs-xs);color:var(--clr-text-secondary);margin-bottom:4px;">Opening Balance</div>
+              <div id="bdLocalOpening" style="font-size:var(--fs-md);font-weight:700;" class="bal-pos">KES 0.00</div>
+            </div>
+            <div style="background:var(--clr-surface-alt);border-radius:var(--radius-sm);padding:var(--sp-3);">
+              <div style="font-size:var(--fs-xs);color:var(--clr-text-secondary);margin-bottom:4px;">Closing Balance</div>
+              <div id="bdLocalClosing" style="font-size:var(--fs-md);font-weight:700;" class="bal-pos">KES 0.00</div>
+            </div>
+            <div style="background:var(--clr-surface-alt);border-radius:var(--radius-sm);padding:var(--sp-3);">
+              <div style="font-size:var(--fs-xs);color:var(--clr-text-secondary);margin-bottom:4px;">Total Receipts</div>
+              <div id="bdLocalReceipts" style="font-size:var(--fs-md);font-weight:700;color:#10b981;">KES 0.00</div>
+            </div>
+            <div style="background:var(--clr-surface-alt);border-radius:var(--radius-sm);padding:var(--sp-3);">
+              <div style="font-size:var(--fs-xs);color:var(--clr-text-secondary);margin-bottom:4px;">Total Payments</div>
+              <div id="bdLocalPayments" style="font-size:var(--fs-md);font-weight:700;color:#ef4444;">KES 0.00</div>
+            </div>
+          </div>
+        </div>
+        <!-- Foreign -->
+        <div style="background:var(--clr-surface);border:1px solid var(--clr-border);border-radius:var(--radius-lg);padding:var(--sp-5);border-top:3px solid #2563eb;">
+          <div style="display:flex;align-items:center;gap:var(--sp-2);margin-bottom:var(--sp-4);">
+            <span style="font-size:1.4rem;">🌍</span>
+            <div><div style="font-size:var(--fs-sm);font-weight:700;color:var(--clr-text);">Foreign Currency Accounts</div><div style="font-size:var(--fs-xs);color:var(--clr-text-secondary);">Each currency tracked separately</div></div>
+          </div>
+          <div id="bdForeignSummary" style="font-size:var(--fs-sm);color:var(--clr-text-secondary);">No foreign currency accounts yet.</div>
+        </div>
       </div>
-      <h3 style="font-size:var(--fs-md);font-weight:600;color:var(--clr-text);margin-bottom:var(--sp-3);">All Bank Accounts</h3>
+
+      <!-- ── CURRENCY TABS ── -->
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:var(--sp-3);">
+        <h3 style="font-size:var(--fs-md);font-weight:700;color:var(--clr-text);">Bank Accounts by Currency</h3>
+        <div id="bdCurTabBar" class="cur-tab-bar"></div>
+      </div>
+
+      <!-- Accounts Table (currency-filtered) -->
       <div class="data-table-wrap">
         <table class="data-table">
-          <thead><tr><th>Flag</th><th class="sortable">Bank</th><th>Account Name</th><th>Account Number</th><th>Currency</th><th class="sortable">Opening Balance</th><th class="sortable">Current Balance</th><th>Status</th></tr></thead>
-          <tbody id="bdAccountsBody"><tr><td colspan="8"><div class="empty-state"><div class="empty-state__icon"><svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M2 10h20"/></svg></div><div class="empty-state__title">No bank accounts</div><div class="empty-state__text">Go to Banking → Add Banks to create your first account.</div></div></td></tr></tbody>
+          <thead>
+            <tr>
+              <th>Flag</th>
+              <th class="sortable">Bank</th>
+              <th>Account Name</th>
+              <th>Account Number</th>
+              <th>Ccy</th>
+              <th class="sortable">Opening Balance</th>
+              <th class="sortable">Total Receipts</th>
+              <th class="sortable">Total Payments</th>
+              <th class="sortable">Closing Balance</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="bdAccountsBody">
+            <tr><td colspan="10">
+              <div class="empty-state">
+                <div class="empty-state__icon"><svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M2 10h20"/></svg></div>
+                <div class="empty-state__title">No bank accounts</div>
+                <div class="empty-state__text">Go to Banking → Add Banks to create your first account.</div>
+              </div>
+            </td></tr>
+          </tbody>
         </table>
       </div>
+
+      <!-- ── CLOSING BALANCE SUMMARY BY CURRENCY ── -->
+      <div id="bdClosingByCurrency" style="margin-top:var(--sp-5);"></div>
     </section>
 
     <!-- ============================================================
@@ -4605,7 +4810,7 @@ function buildCurrOpts(sel){
 }
 function populateSel(id,sel){var el=document.getElementById(id);if(el)el.innerHTML=buildCurrOpts(sel||'KES');}
 function initAllSelects(){
-  ['bankFieldCurrency','cashFieldCurrency','settingBaseCurrency','bankForexBase','fxBaseSel','addCurrSel'].forEach(function(id){
+  ['cashFieldCurrency','settingBaseCurrency','bankForexBase','fxBaseSel','addCurrSel'].forEach(function(id){
     var def=(LS.g('eab_settings')||{}).baseCurrency||'KES';
     if(id==='addCurrSel'){var el=document.getElementById(id);if(el)el.innerHTML='<option value="">Choose currency...</option>'+buildCurrOpts('');}
     else populateSel(id,def);
@@ -4773,9 +4978,9 @@ var bankDB=(function(){
   }
 
   function updateCurrencyLabel(){
-    var sel=document.getElementById('bankFieldCurrency');
+    var hid=document.getElementById('bankFieldCurrency');
     var lbl=document.getElementById('bankBalanceCurrLabel');
-    if(sel&&lbl)lbl.textContent=sel.value||'KES';
+    if(hid&&lbl)lbl.textContent=hid.value||'KES';
   }
 
   function _hideAll(){
@@ -4787,36 +4992,54 @@ var bankDB=(function(){
   function openForm(id){
     _hideAll();
     document.getElementById('bankFormPanel').style.display='block';
-    populateSel('bankFieldCurrency',(LS.g('eab_settings')||{}).baseCurrency||'KES');
+    var defCur=(LS.g('eab_settings')||{}).baseCurrency||'KES';
     clearForm();
+    // init currency display
+    var defCurInfo=getCur(defCur);
+    var cd=document.getElementById('bankFieldCurrencyDisplay');if(cd)cd.value=defCurInfo.f+' '+defCur+' — '+defCurInfo.n;
+    var hc=document.getElementById('bankFieldCurrency');if(hc)hc.value=defCur;
+    var lbl=document.getElementById('bankBalanceCurrLabel');if(lbl)lbl.textContent=defCur;
     if(id){
       var acc=getA().find(function(a){return a.id===id;});if(!acc)return;
       document.getElementById('bankFormTitle').textContent='Edit Bank Account';
-      document.getElementById('bankFieldBankName').value=acc.bankName||'';
+      // bank name
+      var hb=document.getElementById('bankFieldBankName');if(hb)hb.value=acc.bankName||'';
+      var db=document.getElementById('bankFieldBankNameDisplay');if(db)db.value=acc.bankName?'🏦 '+acc.bankName:'';
       document.getElementById('bankFieldAccountName').value=acc.accountName||'';
       document.getElementById('bankFieldAccountNumber').value=acc.accountNumber||'';
       document.getElementById('bankFieldAccountType').value=acc.accountType||'Current';
-      document.getElementById('bankFieldCurrency').value=acc.currency||'KES';
+      // currency
+      var cur=getCur(acc.currency||'KES');
+      var hcEl=document.getElementById('bankFieldCurrency');if(hcEl)hcEl.value=acc.currency||'KES';
+      var dcEl=document.getElementById('bankFieldCurrencyDisplay');if(dcEl)dcEl.value=cur.f+' '+(acc.currency||'KES')+' — '+cur.n;
+      var lblEl=document.getElementById('bankBalanceCurrLabel');if(lblEl)lblEl.textContent=acc.currency||'KES';
       document.getElementById('bankFieldBranch').value=acc.branch||'';
       document.getElementById('bankFieldSwift').value=acc.swift||'';
       document.getElementById('bankFieldOpeningBalance').value=acc.openingBalance||'';
       document.getElementById('bankFieldAsOfDate').value=acc.asOfDate||'';
       document.getElementById('bankFieldStatus').value=acc.status||'Active';
       document.getElementById('bankEditId').value=acc.id;
+      // hide connect prompt in edit mode
+      var prom=document.getElementById('bankConnectPrompt');if(prom)prom.style.display='none';
     }else{
       document.getElementById('bankFormTitle').textContent='Add Bank Account';
       document.getElementById('bankFieldAsOfDate').value=today();
     }
-    updateCurrencyLabel();
-    document.getElementById('bankFieldBankName').focus();
+    document.getElementById('bankFieldAccountName').focus();
   }
 
   function closeForm(){document.getElementById('bankFormPanel').style.display='none';clearForm();}
   function clearForm(){
-    ['bankFieldBankName','bankFieldAccountName','bankFieldAccountNumber','bankFieldBranch',
+    ['bankFieldAccountName','bankFieldAccountNumber','bankFieldBranch',
      'bankFieldSwift','bankFieldOpeningBalance','bankFieldAsOfDate','bankEditId'].forEach(function(id){
       var el=document.getElementById(id);if(el)el.value='';
     });
+    // Reset bank name searchable dropdown
+    var hb=document.getElementById('bankFieldBankName');if(hb)hb.value='';
+    var db=document.getElementById('bankFieldBankNameDisplay');if(db)db.value='';
+    // Reset connect prompt
+    var prom=document.getElementById('bankConnectPrompt');if(prom)prom.style.display='none';
+    var res=document.getElementById('bankConnectResult');if(res)res.innerHTML='';
   }
 
   function save(){
@@ -4825,10 +5048,11 @@ var bankDB=(function(){
     var num=(document.getElementById('bankFieldAccountNumber').value||'').trim();
     if(!bn||!an||!num){flash('bankFormMsg','⚠ Bank Name, Account Name, and Account Number required.',false);return;}
     var accounts=getA();var editId=document.getElementById('bankEditId').value;
+    var cc=(document.getElementById('bankFieldCurrency').value||'KES').trim();
     var rec={
       id:editId||uid(),bankName:bn,accountName:an,accountNumber:num,
       accountType:document.getElementById('bankFieldAccountType').value,
-      currency:document.getElementById('bankFieldCurrency').value||'KES',
+      currency:cc,
       branch:document.getElementById('bankFieldBranch').value.trim(),
       swift:document.getElementById('bankFieldSwift').value.trim(),
       openingBalance:parseFloat(document.getElementById('bankFieldOpeningBalance').value)||0,
@@ -5029,35 +5253,344 @@ var bankDB=(function(){
     setTimeout(function(){closeCsvPanel();render();},1500);
   }
 
-  /* --- Render --- */
+  /* --- Kenya Banks master list with SWIFT codes --- */
+  var KENYA_BANKS=[
+    {n:'Absa Bank Kenya (formerly Barclays)',s:'BARCKENX',b:'Westlands Branch'},
+    {n:'Access Bank Kenya',s:'ABNGKENA',b:'Upper Hill Branch'},
+    {n:'Bank of Africa Kenya',s:'AFRIKENA',b:'Nairobi Branch'},
+    {n:'Bank of Baroda Kenya',s:'BARBKENA',b:'Parklands Branch'},
+    {n:'Bank of India Kenya',s:'BINDINBB',b:'City Centre Branch'},
+    {n:'Citibank Kenya',s:'CITIKENA',b:'Upper Hill Branch'},
+    {n:'Co-operative Bank of Kenya',s:'COOPKENX',b:'Co-op House Branch'},
+    {n:'Consolidated Bank of Kenya',s:'CONBKENA',b:'Nairobi CBD Branch'},
+    {n:'Credit Bank Kenya',s:'CRDBKENA',b:'Westlands Branch'},
+    {n:'Development Bank of Kenya',s:'DEVBKENA',b:'Upper Hill Branch'},
+    {n:'Diamond Trust Bank (DTB) Kenya',s:'DTKEKENA',b:'Diamond Trust Centre'},
+    {n:'Ecobank Kenya',s:'ECOCKENX',b:'Nairobi Branch'},
+    {n:'Equity Bank Kenya',s:'EQBLKENA',b:'Equity Centre'},
+    {n:'Family Bank Kenya',s:'FABLKENA',b:'Nairobi Branch'},
+    {n:'First Community Bank Kenya',s:'FCBKKENA',b:'Nairobi Branch'},
+    {n:'Guaranty Trust Bank (GTBank) Kenya',s:'GTBIKENA',b:'Nairobi Branch'},
+    {n:'Gulf African Bank Kenya',s:'GAFBKENA',b:'Nairobi Branch'},
+    {n:'Habib Bank AG Zurich Kenya',s:'HBZUKENA',b:'Nairobi Branch'},
+    {n:'Housing Finance Corporation (HFC)',s:'HFCOKENA',b:'HF House Branch'},
+    {n:'I&M Bank Kenya',s:'IMBLKENA',b:'I&M Tower Branch'},
+    {n:'Kenya Commercial Bank (KCB)',s:'KCBLKENX',b:'Kencom Branch'},
+    {n:'Kenya Post Office Savings Bank (Postbank)',s:'KPOSKENX',b:'GPO Branch'},
+    {n:'Middle East Bank Kenya',s:'MEBTKENA',b:'Nairobi Branch'},
+    {n:'National Bank of Kenya (NBK)',s:'NBKEKENX',b:'National Bank House'},
+    {n:'NCBA Bank Kenya',s:'CBAFKENX',b:'NCBA Centre'},
+    {n:'Oriental Commercial Bank Kenya',s:'OCBKENA',b:'Nairobi Branch'},
+    {n:'Paramount Bank Kenya',s:'PARBKENA',b:'Nairobi Branch'},
+    {n:'Prime Bank Kenya',s:'PRIMKENA',b:'Nairobi Branch'},
+    {n:'SBM Bank Kenya (formerly Fidelity)',s:'STBIKENA',b:'Nairobi Branch'},
+    {n:'Sidian Bank Kenya (formerly K-Rep)',s:'KABAKENX',b:'Nairobi Branch'},
+    {n:'Stanbic Bank Kenya',s:'SBICKENX',b:'CFC Stanbic House'},
+    {n:'Standard Chartered Bank Kenya',s:'SCBLKENX',b:'Chiromo Branch'},
+    {n:'Trans-National Bank Kenya',s:'TNBLKENA',b:'Nairobi Branch'},
+    {n:'UBA Kenya',s:'UNAFKENA',b:'Nairobi Branch'},
+    {n:'Victoria Commercial Bank Kenya',s:'VCBAKENA',b:'Nairobi Branch'}
+  ];
+
+  /* --- Searchable Bank dropdown --- */
+  var _bankDropOpen=false;
+  function initBankDrop(){
+    renderBankDropList('');
+    document.addEventListener('click',function(e){
+      if(!document.getElementById('bankNameDrop').contains(e.target)){closeBankDrop();}
+    });
+  }
+  function renderBankDropList(q){
+    var list=document.getElementById('bankNameList');if(!list)return;
+    var filtered=q?KENYA_BANKS.filter(function(b){return b.n.toLowerCase().indexOf(q.toLowerCase())>-1;}):KENYA_BANKS;
+    if(!filtered.length){list.innerHTML='<div class="srch-drop__item--empty">No banks found</div>';return;}
+    var current=document.getElementById('bankFieldBankName').value||'';
+    list.innerHTML=filtered.map(function(b){
+      var sel=b.n===current?' selected':'';
+      return '<div class="srch-drop__item'+sel+'" onclick="bankDB.selectBank(\''+b.n.replace(/'/g,"\\'")+'\')">'+'<span style="font-size:.8rem;color:var(--clr-text-secondary);">🏦</span> '+b.n+'</div>';
+    }).join('');
+  }
+  function filterBankDrop(){
+    var q=(document.getElementById('bankNameSearch')||{}).value||'';
+    renderBankDropList(q);
+  }
+  function toggleBankDrop(){
+    var panel=document.getElementById('bankNamePanel');if(!panel)return;
+    _bankDropOpen=!_bankDropOpen;
+    if(_bankDropOpen){panel.classList.add('open');var s=document.getElementById('bankNameSearch');if(s)s.focus();}
+    else{panel.classList.remove('open');}
+  }
+  function closeBankDrop(){
+    var panel=document.getElementById('bankNamePanel');if(panel)panel.classList.remove('open');_bankDropOpen=false;
+  }
+  function selectBank(name){
+    document.getElementById('bankFieldBankName').value=name;
+    var display=document.getElementById('bankFieldBankNameDisplay');if(display)display.value='🏦 '+name;
+    // Auto-populate SWIFT
+    var bank=KENYA_BANKS.find(function(b){return b.n===name;});
+    if(bank){
+      var sw=document.getElementById('bankFieldSwift');if(sw)sw.value=bank.s;
+      var br=document.getElementById('bankFieldBranch');if(br&&(!br.value||br.value===''))br.value=bank.b||'';
+    }
+    closeBankDrop();
+    // Show live connect prompt
+    var prom=document.getElementById('bankConnectPrompt');
+    var bnEl=document.getElementById('bankConnectBankName');
+    if(prom&&bnEl&&!document.getElementById('bankEditId').value){
+      bnEl.textContent=name;prom.style.display='block';
+    }
+  }
+
+  /* --- Searchable Currency dropdown --- */
+  var _currDropOpen=false;
+  function initCurrDrop(){
+    renderCurrDropList('');
+    document.addEventListener('click',function(e){
+      var d=document.getElementById('bankCurrDrop');
+      if(d&&!d.contains(e.target)){closeCurrDrop();}
+    });
+  }
+  function renderCurrDropList(q){
+    var list=document.getElementById('bankCurrList');if(!list)return;
+    var filtered=q?WC.filter(function(c){return c.c.toLowerCase().indexOf(q.toLowerCase())>-1||c.n.toLowerCase().indexOf(q.toLowerCase())>-1;}):WC;
+    if(!filtered.length){list.innerHTML='<div class="srch-drop__item--empty">No currencies found</div>';return;}
+    var current=document.getElementById('bankFieldCurrency').value||'KES';
+    list.innerHTML=filtered.map(function(c){
+      var sel=c.c===current?' selected':'';
+      return '<div class="srch-drop__item'+sel+'" onclick="bankDB.selectCurr(\''+c.c+'\')">'+c.f+' <strong>'+c.c+'</strong> — '+c.n+'</div>';
+    }).join('');
+  }
+  function filterCurrDrop(){
+    var q=(document.getElementById('bankCurrSearch')||{}).value||'';
+    renderCurrDropList(q);
+  }
+  function toggleCurrDrop(){
+    var panel=document.getElementById('bankCurrPanel');if(!panel)return;
+    _currDropOpen=!_currDropOpen;
+    if(_currDropOpen){panel.classList.add('open');renderCurrDropList('');var s=document.getElementById('bankCurrSearch');if(s){s.value='';s.focus();}}
+    else{panel.classList.remove('open');}
+  }
+  function closeCurrDrop(){
+    var panel=document.getElementById('bankCurrPanel');if(panel)panel.classList.remove('open');_currDropOpen=false;
+  }
+  function selectCurr(code){
+    var hid=document.getElementById('bankFieldCurrency');if(hid)hid.value=code;
+    var cur=getCur(code);
+    var display=document.getElementById('bankFieldCurrencyDisplay');if(display)display.value=cur.f+' '+code+' — '+cur.n;
+    var lbl=document.getElementById('bankBalanceCurrLabel');if(lbl)lbl.textContent=code;
+    closeCurrDrop();
+    renderCurrDropList('');
+  }
+
+  /* --- Live Connect Prompt handlers --- */
+  function attemptAutoConnect(){
+    var bankName=document.getElementById('bankFieldBankName').value||'';
+    var acctNum=document.getElementById('bankFieldAccountNumber').value||'';
+    var swift=document.getElementById('bankFieldSwift').value||'';
+    var res=document.getElementById('bankConnectResult');
+    var btn=document.getElementById('bankAutoConnectBtn');
+    if(btn){btn.textContent='🔄 Connecting…';btn.disabled=true;}
+    if(res)res.innerHTML='<div style="padding:10px 14px;background:var(--clr-surface-alt);border-radius:8px;font-size:var(--fs-xs);color:var(--clr-text-secondary);">🔄 Attempting to reach '+bankName+' Open Banking API (SWIFT: '+swift+')…</div>';
+    setTimeout(function(){
+      if(btn){btn.textContent='🔌 Connect Automatically';btn.disabled=false;}
+      var info=getCur(document.getElementById('bankFieldCurrency').value||'KES');
+      if(res)res.innerHTML='<div style="padding:12px 14px;background:#fffbeb;border:1px solid #f59e0b;border-radius:8px;font-size:var(--fs-xs);color:#92400e;line-height:1.7;">'+
+        '⚠ <strong>Automatic connection attempted.</strong> A server-side proxy is required for real Open Banking connections due to CORS restrictions and bank authentication requirements.<br><br>'+
+        '<strong>Next steps for live feeds:</strong> Contact your relationship manager at <strong>'+bankName+'</strong> to obtain Open Banking API credentials (Client ID + Secret). Once received, use the <strong>API Connect</strong> button on the Add Banks page to configure the live connection. The system will then auto-sync all transactions in real time.<br><br>'+
+        '✅ <strong>Account has been saved.</strong> You can proceed to add balances and transactions manually while the API connection is being set up.</div>';
+    },2500);
+  }
+  function manualSetup(){
+    var prom=document.getElementById('bankConnectPrompt');
+    if(prom)prom.style.display='none';
+    flash('bankFormMsg','Manual setup selected. Fill in your account details and click Save.',true);
+  }
+  function dismissConnect(){
+    var prom=document.getElementById('bankConnectPrompt');
+    if(prom)prom.style.display='none';
+  }
+
+  /* --- Balance helpers per currency --- */
+  function getTxnTotals(accountId){
+    var txns=getTx().filter(function(t){return t.accountId===accountId;});
+    var crTypes=['Deposit','Transfer In','Interest'];
+    var receipts=0,payments=0;
+    txns.forEach(function(t){
+      if(crTypes.indexOf(t.type)>-1)receipts+=parseFloat(t.amount)||0;
+      else payments+=parseFloat(t.amount)||0;
+    });
+    return {receipts:receipts,payments:payments};
+  }
+
+  /* --- Format amount with colour --- */
+  function fmtBal(n,code){
+    var dp=parseInt((LS.g('eab_settings')||{}).decimalPlaces)||2;
+    var abs=Math.abs(n);
+    var formatted=code+' '+abs.toLocaleString('en-KE',{minimumFractionDigits:dp,maximumFractionDigits:dp});
+    if(n<0)return '<span class="bal-neg">('+formatted+')</span>';
+    return '<span class="bal-pos">'+formatted+'</span>';
+  }
+
+  /* --- Dashboard render (currency tabs + per-currency sections) --- */
+  var _dashCurFilter='ALL';
+  function renderDashboard(){
+    var all=getA();
+    var txAll=getTx();
+    var crTypes=['Deposit','Transfer In','Interest'];
+
+    // Gather per-currency data
+    var byCur={};
+    var totalPaymentsKES=0,totalReceiptsKES=0,actCnt=0;
+    all.forEach(function(a){
+      var cc=a.currency||'KES';
+      if(!byCur[cc])byCur[cc]={accounts:[],opening:0,closing:0,receipts:0,payments:0};
+      var txns=txAll.filter(function(t){return t.accountId===a.id;});
+      var rc=0,py=0;
+      txns.forEach(function(t){if(crTypes.indexOf(t.type)>-1)rc+=parseFloat(t.amount)||0;else py+=parseFloat(t.amount)||0;});
+      var op=parseFloat(a.openingBalance)||0;
+      var cl=op+rc-py;
+      byCur[cc].accounts.push(a);
+      byCur[cc].opening+=op;byCur[cc].closing+=cl;byCur[cc].receipts+=rc;byCur[cc].payments+=py;
+      if(a.status==='Active')actCnt++;
+      // rough KES equivalent (assume 1:1 for KES, otherwise use stored rates if available)
+      var fxRates=(LS.g('eab_fx_rates')||{}).rates||{};
+      var rate=cc==='KES'?1:(fxRates[cc]?1/parseFloat(fxRates[cc]):1);
+      totalReceiptsKES+=rc*rate;totalPaymentsKES+=py*rate;
+    });
+
+    var curCodes=Object.keys(byCur).sort(function(a,b){return a==='KES'?-1:b==='KES'?1:a<b?-1:1;});
+    var dp=parseInt((LS.g('eab_settings')||{}).decimalPlaces)||2;
+
+    // Top KPIs
+    var setEl=function(id,v){var e=document.getElementById(id);if(e)e.textContent=v;};
+    setEl('bdKpiCount',all.length);
+    setEl('bdKpiActive',actCnt);
+    setEl('bdKpiPayments',totalPaymentsKES<=0?'KES 0.00':('KES '+totalPaymentsKES.toLocaleString('en-KE',{minimumFractionDigits:dp})));
+    setEl('bdKpiReceipts',totalReceiptsKES<=0?'KES 0.00':('KES '+totalReceiptsKES.toLocaleString('en-KE',{minimumFractionDigits:dp})));
+    setEl('bdKpiPendingRecon',all.filter(function(a){return (getTx().filter(function(t){return t.accountId===a.id;}).length>0);}).length);
+
+    // Local KES summary
+    var kes=byCur['KES']||{opening:0,closing:0,receipts:0,payments:0};
+    var setHtml=function(id,v){var e=document.getElementById(id);if(e)e.innerHTML=v;};
+    setHtml('bdLocalOpening',fmtBal(kes.opening,'KES'));
+    setHtml('bdLocalClosing',fmtBal(kes.closing,'KES'));
+    setHtml('bdLocalReceipts','<span class="bal-pos">KES '+kes.receipts.toLocaleString('en-KE',{minimumFractionDigits:dp})+'</span>');
+    setHtml('bdLocalPayments',kes.payments>0?'<span class="bal-neg">(KES '+kes.payments.toLocaleString('en-KE',{minimumFractionDigits:dp})+')</span>':'<span style="color:var(--clr-text-muted);">KES 0.00</span>');
+
+    // Foreign summary
+    var foreignCodes=curCodes.filter(function(c){return c!=='KES';});
+    var fsEl=document.getElementById('bdForeignSummary');
+    if(fsEl){
+      if(!foreignCodes.length){fsEl.innerHTML='<p style="font-size:var(--fs-sm);color:var(--clr-text-secondary);">No foreign currency accounts yet.</p>';}
+      else{
+        fsEl.innerHTML='<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:var(--sp-2);">'+
+          foreignCodes.map(function(cc){
+            var d=byCur[cc];var cur=getCur(cc);
+            return '<div style="background:var(--clr-surface-alt);border-radius:var(--radius-sm);padding:var(--sp-3);">'+
+              '<div style="font-size:1.1rem;margin-bottom:2px;">'+cur.f+' <strong>'+cc+'</strong></div>'+
+              '<div style="font-size:var(--fs-xs);color:var(--clr-text-secondary);">Opening</div>'+
+              '<div style="font-size:var(--fs-sm);">'+fmtBal(d.opening,cc)+'</div>'+
+              '<div style="font-size:var(--fs-xs);color:var(--clr-text-secondary);margin-top:3px;">Closing</div>'+
+              '<div style="font-size:var(--fs-sm);">'+fmtBal(d.closing,cc)+'</div>'+
+              '</div>';
+          }).join('')+'</div>';
+      }
+    }
+
+    // Currency tab bar
+    var tabBar=document.getElementById('bdCurTabBar');
+    if(tabBar){
+      var allTab='<div class="cur-tab'+(_dashCurFilter==='ALL'?' active':'')+'" onclick="bankDB.setCurFilter(\'ALL\')">All <span class="cur-tab__badge">'+all.length+'</span></div>';
+      var curTabs=curCodes.map(function(cc){
+        var cur=getCur(cc);var cnt=byCur[cc].accounts.length;
+        return '<div class="cur-tab'+(_dashCurFilter===cc?' active':'')+'" onclick="bankDB.setCurFilter(\''+cc+'\')">'+'<span class="cur-tab__flag">'+cur.f+'</span> '+cc+' <span class="cur-tab__badge">'+cnt+'</span></div>';
+      }).join('');
+      tabBar.innerHTML=allTab+curTabs;
+    }
+
+    // Accounts table (filtered by selected currency tab)
+    var bdBody=document.getElementById('bdAccountsBody');
+    if(bdBody){
+      var displayAccounts=_dashCurFilter==='ALL'?all:all.filter(function(a){return a.currency===_dashCurFilter;});
+      if(!displayAccounts.length){
+        bdBody.innerHTML='<tr><td colspan="10"><div class="empty-state"><div class="empty-state__title">No '+((_dashCurFilter==='ALL')?'':''+_dashCurFilter+' ')+'accounts</div></div></td></tr>';
+      } else {
+        bdBody.innerHTML=displayAccounts.map(function(a){
+          var totals=getTxnTotals(a.id);
+          var op=parseFloat(a.openingBalance)||0;
+          var cl=op+totals.receipts-totals.payments;
+          var info=getCur(a.currency);
+          return '<tr>'+
+            '<td style="font-size:1.2rem;">'+info.f+'</td>'+
+            '<td style="font-weight:600;">'+a.bankName+'</td>'+
+            '<td>'+a.accountName+'</td>'+
+            '<td style="font-family:monospace;font-size:var(--fs-xs);">'+a.accountNumber+'</td>'+
+            '<td><span style="font-weight:800;color:var(--clr-primary);font-size:var(--fs-xs);">'+a.currency+'</span></td>'+
+            '<td>'+fmtBal(op,a.currency)+'</td>'+
+            '<td><span class="bal-pos">'+a.currency+' '+totals.receipts.toLocaleString('en-KE',{minimumFractionDigits:dp})+'</span></td>'+
+            '<td>'+(totals.payments>0?'<span class="bal-neg">('+a.currency+' '+totals.payments.toLocaleString('en-KE',{minimumFractionDigits:dp})+')</span>':'<span style="color:var(--clr-text-muted);">'+a.currency+' 0.00</span>')+'</td>'+
+            '<td>'+fmtBal(cl,a.currency)+'</td>'+
+            '<td>'+statusBadge(a.status)+'</td>'+
+            '</tr>';
+        }).join('');
+      }
+    }
+
+    // Closing balance summary by currency
+    var closingEl=document.getElementById('bdClosingByCurrency');
+    if(closingEl&&curCodes.length){
+      closingEl.innerHTML='<h3 style="font-size:var(--fs-md);font-weight:700;color:var(--clr-text);margin-bottom:var(--sp-4);">Closing Balance Summary by Currency</h3>'+
+        '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:var(--sp-3);">'+
+        curCodes.map(function(cc){
+          var d=byCur[cc];var cur=getCur(cc);
+          var trend=d.closing-d.opening;
+          return '<div style="background:var(--clr-surface);border:1px solid var(--clr-border);border-radius:var(--radius-lg);padding:var(--sp-4);border-left:4px solid '+(d.closing>=0?'#10b981':'#ef4444')+';">'+
+            '<div style="display:flex;align-items:center;gap:8px;margin-bottom:var(--sp-3);">'+
+            '<span style="font-size:1.5rem;">'+cur.f+'</span>'+
+            '<div><div style="font-weight:800;font-size:var(--fs-sm);">'+cc+'</div><div style="font-size:var(--fs-xs);color:var(--clr-text-secondary);">'+cur.n+'</div></div>'+
+            '<div style="margin-left:auto;font-size:1rem;">'+(trend>=0?'📈':'📉')+'</div>'+
+            '</div>'+
+            '<div style="margin-bottom:4px;"><span style="font-size:var(--fs-xs);color:var(--clr-text-secondary);">Closing Balance</span></div>'+
+            '<div style="font-size:var(--fs-xl);font-weight:800;">'+fmtBal(d.closing,cc)+'</div>'+
+            '<div style="margin-top:var(--sp-2);display:flex;justify-content:space-between;font-size:var(--fs-xs);">'+
+            '<span style="color:#10b981;">↑ '+cc+' '+d.receipts.toLocaleString('en-KE',{minimumFractionDigits:dp})+'</span>'+
+            (d.payments>0?'<span style="color:#ef4444;">↓ ('+cc+' '+d.payments.toLocaleString('en-KE',{minimumFractionDigits:dp})+')</span>':'<span style="color:var(--clr-text-muted);">No payments</span>')+
+            '</div>'+
+            '<div style="margin-top:4px;font-size:var(--fs-xs);color:'+(d.accounts.length>0?'var(--clr-text-secondary)':'var(--clr-text-muted)')+';">'+d.accounts.length+' account'+(d.accounts.length!==1?'s':'')+'</div>'+
+            '</div>';
+        }).join('')+'</div>';
+    } else if(closingEl){
+      closingEl.innerHTML='';
+    }
+  }
+
+  function setCurFilter(cc){
+    _dashCurFilter=cc;
+    renderDashboard();
+  }
+
+  /* --- Render (Add Banks table + KPIs) --- */
   function render(){
     var all=getA();
     var q=((document.getElementById('bankSearchInput')||{}).value||'').toLowerCase();
     var filtered=q?all.filter(function(a){return (a.bankName+a.accountName+a.accountNumber).toLowerCase().indexOf(q)>-1;}):all;
-    var totOp=0,totCu=0,actCnt=0;
-    all.forEach(function(a){totOp+=parseFloat(a.openingBalance)||0;totCu+=curBal(a.id,a.openingBalance);if(a.status==='Active')actCnt++;});
+    var totOp=0,actCnt=0;
+    all.forEach(function(a){totOp+=parseFloat(a.openingBalance)||0;if(a.status==='Active')actCnt++;});
 
     // Add Banks KPIs
-    [['bankKpiCount',all.length],['bankKpiOpeningTotal',totOp.toLocaleString('en-KE',{minimumFractionDigits:2})],
-     ['bankKpiCurrentTotal',totCu.toLocaleString('en-KE',{minimumFractionDigits:2})],['bankKpiActive',actCnt]].forEach(function(p){
+    var dp=parseInt((LS.g('eab_settings')||{}).decimalPlaces)||2;
+    var totCl=0;
+    all.forEach(function(a){var t=getTxnTotals(a.id);var op=parseFloat(a.openingBalance)||0;totCl+=op+t.receipts-t.payments;});
+    [['bankKpiCount',all.length],
+     ['bankKpiOpeningTotal',totOp.toLocaleString('en-KE',{minimumFractionDigits:dp})],
+     ['bankKpiCurrentTotal',totCl.toLocaleString('en-KE',{minimumFractionDigits:dp})],
+     ['bankKpiActive',actCnt]].forEach(function(p){
       var el=document.getElementById(p[0]);if(el)el.textContent=p[1];
     });
-    // Banking Dashboard KPIs
-    [['bdKpiCount',all.length],['bdKpiOpening',totOp.toLocaleString('en-KE',{minimumFractionDigits:2})],
-     ['bdKpiCurrent',totCu.toLocaleString('en-KE',{minimumFractionDigits:2})],['bdKpiActive',actCnt]].forEach(function(p){
-      var el=document.getElementById(p[0]);if(el)el.textContent=p[1];
-    });
-    // Banking Dashboard table
-    var bdBody=document.getElementById('bdAccountsBody');
-    if(bdBody){
-      bdBody.innerHTML=all.length?all.map(function(a){
-        var cur=curBal(a.id,a.openingBalance);var d=cur-(parseFloat(a.openingBalance)||0);
-        var dc=d>=0?'#10b981':'#ef4444';var dt=(d>=0?'+':'')+d.toLocaleString('en-KE',{minimumFractionDigits:2});
-        var info=getCur(a.currency);
-        return '<tr><td style="font-size:1.2rem;">'+info.f+'</td><td style="font-weight:600;">'+a.bankName+'</td><td>'+a.accountName+'</td><td style="font-family:monospace;font-size:var(--fs-xs);">'+a.accountNumber+'</td><td style="font-weight:700;">'+a.currency+'</td><td>'+fmtAmt(parseFloat(a.openingBalance)||0,a.currency)+'</td><td><strong>'+fmtAmt(cur,a.currency)+'</strong> <span style="font-size:var(--fs-xs);color:'+dc+';">('+dt+')</span></td><td>'+statusBadge(a.status)+'</td></tr>';
-      }).join(''):
-      '<tr><td colspan="8"><div class="empty-state"><div class="empty-state__title">No bank accounts</div><div class="empty-state__text">Go to Banking → Add Banks to create your first account.</div></div></td></tr>';
-    }
+
+    // Also refresh dashboard if it's rendered
+    renderDashboard();
+
     // Add Banks table
     var tbody=document.getElementById('bankTableBody');if(!tbody)return;
     if(!filtered.length){
@@ -5065,8 +5598,9 @@ var bankDB=(function(){
       return;
     }
     tbody.innerHTML=filtered.map(function(a,i){
-      var cur=curBal(a.id,a.openingBalance);var d=cur-(parseFloat(a.openingBalance)||0);
-      var dc=d>=0?'#10b981':'#ef4444';var dt=(d>=0?'+':'')+d.toLocaleString('en-KE',{minimumFractionDigits:2});
+      var totals=getTxnTotals(a.id);
+      var op=parseFloat(a.openingBalance)||0;
+      var cl=op+totals.receipts-totals.payments;
       var info=getCur(a.currency);
       return '<tr>'+
         '<td style="font-size:var(--fs-xs);color:var(--clr-text-muted);">'+(i+1)+'</td>'+
@@ -5074,10 +5608,10 @@ var bankDB=(function(){
         '<td>'+a.accountName+'</td>'+
         '<td style="font-family:monospace;font-size:var(--fs-xs);">'+a.accountNumber+'</td>'+
         '<td>'+a.accountType+'</td>'+
-        '<td><strong>'+info.f+' '+a.currency+'</strong></td>'+
+        '<td><span style="font-weight:800;color:var(--clr-primary);">'+a.currency+'</span></td>'+
         '<td style="font-size:var(--fs-xs);">'+(a.branch||'—')+'</td>'+
-        '<td>'+fmtAmt(parseFloat(a.openingBalance)||0,a.currency)+'</td>'+
-        '<td><strong>'+fmtAmt(cur,a.currency)+'</strong> <span style="font-size:var(--fs-xs);color:'+dc+';">('+dt+')</span></td>'+
+        '<td>'+fmtBal(op,a.currency)+'</td>'+
+        '<td>'+fmtBal(cl,a.currency)+'</td>'+
         '<td>'+statusBadge(a.status)+'</td>'+
         '<td style="white-space:nowrap;">'+
           '<button onclick="bankDB.openTxn(\''+a.id+'\')" style="font-size:var(--fs-xs);padding:3px 7px;border-radius:4px;border:1px solid var(--clr-primary);color:var(--clr-primary);background:var(--clr-primary-light);cursor:pointer;margin-right:3px;">+ Entry</button>'+
@@ -5089,18 +5623,32 @@ var bankDB=(function(){
 
   function exportCSV(){
     var all=getA();if(!all.length){alert('No accounts.');return;}
-    var h='#,Bank Name,Account Name,Account Number,Type,Currency,Branch,SWIFT,Opening Balance,Current Balance,Status,Created';
-    var rows=all.map(function(a,i){return [i+1,'"'+a.bankName+'"','"'+a.accountName+'"',a.accountNumber,a.accountType,a.currency,'"'+(a.branch||'')+'"',a.swift||'',a.openingBalance,curBal(a.id,a.openingBalance).toFixed(2),a.status,a.createdAt].join(',');});
+    var h='#,Bank Name,Account Name,Account Number,Type,Currency,Branch,SWIFT,Opening Balance,Closing Balance,Status,Created';
+    var rows=all.map(function(a,i){
+      var t=getTxnTotals(a.id);var op=parseFloat(a.openingBalance)||0;var cl=op+t.receipts-t.payments;
+      return [i+1,'"'+a.bankName+'"','"'+a.accountName+'"',a.accountNumber,a.accountType,a.currency,'"'+(a.branch||'')+'"',a.swift||'',op.toFixed(2),cl.toFixed(2),a.status,a.createdAt].join(',');
+    });
     var lnk=document.createElement('a');lnk.href='data:text/csv;charset=utf-8,'+encodeURIComponent([h].concat(rows).join('\n'));lnk.download='bank_accounts.csv';lnk.click();
   }
 
-  document.addEventListener('DOMContentLoaded',function(){render();});
+  document.addEventListener('DOMContentLoaded',function(){
+    initBankDrop();
+    initCurrDrop();
+    // Set default currency display
+    var defCur=getCur((LS.g('eab_settings')||{}).baseCurrency||'KES');
+    var dd=document.getElementById('bankFieldCurrencyDisplay');if(dd)dd.value=defCur.f+' KES — '+defCur.n;
+    render();
+  });
   return {openForm:openForm,closeForm:closeForm,save:save,del:del,updateCurrencyLabel:updateCurrencyLabel,
     openTxn:openTxn,closeTxn:closeTxn,saveTxn:saveTxn,delTxn:delTxn,
     openApiPanel:openApiPanel,closeApiPanel:closeApiPanel,saveApiConfig:saveApiConfig,testApiConnection:testApiConnection,
     openForexPanel:openForexPanel,closeForexPanel:closeForexPanel,fetchFX:fetchFX,
     openCsvPanel:openCsvPanel,closeCsvPanel:closeCsvPanel,downloadTemplate:downloadTemplate,
-    handleCsvUpload:handleCsvUpload,importCsv:importCsv,render:render,exportCSV:exportCSV};
+    handleCsvUpload:handleCsvUpload,importCsv:importCsv,render:render,exportCSV:exportCSV,
+    renderDashboard:renderDashboard,setCurFilter:setCurFilter,
+    toggleBankDrop:toggleBankDrop,filterBankDrop:filterBankDrop,selectBank:selectBank,
+    toggleCurrDrop:toggleCurrDrop,filterCurrDrop:filterCurrDrop,selectCurr:selectCurr,
+    attemptAutoConnect:attemptAutoConnect,manualSetup:manualSetup,dismissConnect:dismissConnect};
 })();
 
 /* =====================================================================
